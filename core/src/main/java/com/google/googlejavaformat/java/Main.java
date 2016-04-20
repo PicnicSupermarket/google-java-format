@@ -207,8 +207,7 @@ public final class Main {
     int numThreads = Math.min(MAX_THREADS, argInfo.parameters.fileNamesFlag.size());
     ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
 
-    Map<Path, String> inputs = new LinkedHashMap<>();
-    Map<Path, Future<String>> results = new LinkedHashMap<>();
+    Map<Path, Future<FormatFileCallable>> results = new LinkedHashMap<>();
     for (String fileName : argInfo.parameters.fileNamesFlag) {
       if (!fileName.endsWith(".java")) {
         errWriter.println("Skipping non-Java file: " + fileName);
@@ -222,7 +221,6 @@ public final class Main {
         errWriter.write(fileName + ": could not read file: " + e.getMessage());
         return 1;
       }
-      inputs.put(path, input);
       results.put(
           path,
           executorService.submit(
@@ -236,10 +234,12 @@ public final class Main {
     }
 
     boolean allOk = true;
-    for (Map.Entry<Path, Future<String>> result : results.entrySet()) {
+    for (Map.Entry<Path, Future<FormatFileCallable>> result : results.entrySet()) {
+      FormatFileCallable callable;
       String formatted;
       try {
-        formatted = result.getValue().get();
+        callable = result.getValue().get();
+        formatted = callable.getOutput();
       } catch (InterruptedException e) {
         errWriter.println(e.getMessage());
         allOk = false;
@@ -254,7 +254,7 @@ public final class Main {
         continue;
       }
       if (argInfo.parameters.iFlag) {
-        if (formatted.equals(inputs.get(result.getKey()))) {
+        if (callable.isInputEqualToOutput()) {
           continue; // preserve original file
         }
         try {
@@ -287,7 +287,7 @@ public final class Main {
                   argInfo.parameters.lengthFlags,
                   input,
                   options)
-              .call();
+              .call().getOutput();
       outWriter.write(output);
       return 0;
     } catch (FormatterException e) {

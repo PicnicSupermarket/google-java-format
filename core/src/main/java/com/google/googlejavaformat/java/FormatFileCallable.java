@@ -30,13 +30,14 @@ import java.util.concurrent.Callable;
  * Encapsulates information about a file to be formatted, including which parts of the file to
  * format.
  */
-public class FormatFileCallable implements Callable<String> {
+public class FormatFileCallable implements Callable<FormatFileCallable> {
   private final String fileName;
   private final String input;
   private final ImmutableRangeSet<Integer> lineRanges;
   private final ImmutableList<Integer> offsets;
   private final ImmutableList<Integer> lengths;
   private final JavaFormatterOptions options;
+  private String output;
 
   public FormatFileCallable(
       String fileName,
@@ -51,15 +52,16 @@ public class FormatFileCallable implements Callable<String> {
     this.offsets = ImmutableList.copyOf(offsets);
     this.lengths = ImmutableList.copyOf(lengths);
     this.options = options;
+    this.output = input;
   }
 
   @Override
-  public String call() throws FormatterException {
+  public FormatFileCallable call() throws FormatterException {
     String inputString = input;
     if (options.sortImports() != SortImports.NO) {
       inputString = ImportOrderer.reorderImports(fileName, inputString);
       if (options.sortImports() == SortImports.ONLY) {
-        return inputString;
+        return this;
       }
     }
 
@@ -87,6 +89,15 @@ public class FormatFileCallable implements Callable<String> {
     if (!errors.isEmpty()) {
       throw new FormatterException(errors);
     }
-    return javaOutput.writeMerged(tokens);
+    this.output = javaOutput.writeMerged(tokens);
+    return this;
+  }
+
+  public String getOutput() {
+    return output;
+  }
+
+  public boolean isInputEqualToOutput() {
+    return input.equals(output);
   }
 }
