@@ -21,7 +21,7 @@
   <parent>
     <groupId>com.google.googlejavaformat</groupId>
     <artifactId>google-java-format-parent</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>google-java-format-idea-plugin</artifactId>
@@ -33,21 +33,21 @@
   </description>
 
   <properties>
-    <!-- IJ release 14.1.1 -->
-    <idea.platform.version>141.1532.4</idea.platform.version>
+    <!-- IJ release 2016.2 -->
+    <idea.platform.version>162.1121.32</idea.platform.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>com.google.googlejavaformat</groupId>
       <artifactId>google-java-format</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
 
     <!--
     The IJ dependencies below must be installed from your IDEA installation directory
     using src/main/scripts/install-idea-jars.sh .
-    141.1532.4 maps to IJ release version 14.1.4.
+    162.1121.32 maps to IJ release version 2016.2.
     -->
     <dependency>
       <groupId>com.jetbrains.intellij.platform</groupId>

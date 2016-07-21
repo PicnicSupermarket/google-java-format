@@ -41,7 +41,7 @@ if [[ ! -d $ideaHomeDir/lib ]]; then
   exit 1
 fi
 
-for artifactPath in $ideaHomeDir/lib/*.jar; do
+for artifactPath in $ideaHomeDir/lib/{annotations,extensions,idea,openapi,picocontainer,util}.jar; do
   artifact=$(basename $artifactPath .jar)
   if [[ -f $artifactPath ]]; then
     mvn install:install-file \
