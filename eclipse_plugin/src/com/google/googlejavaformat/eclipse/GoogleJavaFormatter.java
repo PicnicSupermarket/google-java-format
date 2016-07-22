@@ -29,7 +29,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 import com.google.googlejavaformat.java.Formatter;
 import com.google.googlejavaformat.java.FormatterException;
+import com.google.googlejavaformat.java.JavaFormatterOptions;
 import com.google.googlejavaformat.java.Replacement;
+import com.google.googlejavaformat.java.JavaFormatterOptions.Style;
 
 /**
  * Google Java Style Code Formatter.
@@ -52,7 +54,7 @@ public class GoogleJavaFormatter extends CodeFormatter {
   /**
    * The google-java-format formatter instance.
    */
-  private final Formatter formatter = new Formatter();
+  private final Formatter formatter = new Formatter(JavaFormatterOptions.builder().style(Style.AOSP).build());
 
   /**
    * Block indentation: +2 spaces
