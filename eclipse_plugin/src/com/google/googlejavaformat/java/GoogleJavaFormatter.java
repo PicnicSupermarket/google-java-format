@@ -16,6 +16,7 @@ package com.google.googlejavaformat.java;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Range;
+import com.google.googlejavaformat.java.JavaFormatterOptions.Style;
 import com.google.googlejavaformat.java.SnippetFormatter.SnippetKind;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +84,7 @@ public class GoogleJavaFormatter extends CodeFormatter {
           throw new IllegalArgumentException(String.format("Unknown snippet kind: %d", kind));
       }
       List<Replacement> replacements =
-          new SnippetFormatter()
+          new SnippetFormatter(Style.AOSP)
               .format(
                   snippetKind, source, rangesFromRegions(regions), initialIndent, includeComments);
       if (idempotent(source, regions, replacements)) {
