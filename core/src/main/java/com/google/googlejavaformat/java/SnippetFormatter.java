@@ -20,6 +20,7 @@ import com.google.common.collect.DiscreteDomain;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
 import com.google.common.collect.TreeRangeSet;
+import com.google.googlejavaformat.java.JavaFormatterOptions.Style;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,16 +57,26 @@ public class SnippetFormatter {
     }
   }
 
-  private static final int INDENTATION_SIZE = 2;
-  private final Formatter formatter = new Formatter();
   private static final CharMatcher NOT_WHITESPACE = CharMatcher.whitespace().negate();
+
+  private final Formatter formatter;
+  private final int indentationSize;
+
+  public SnippetFormatter() {
+	 this(Style.GOOGLE);
+  }
+
+  public SnippetFormatter(Style style) {
+	 this.formatter = new Formatter(JavaFormatterOptions.builder().style(style).build());
+	 this.indentationSize = 2 * style.indentationMultiplier();
+  }
 
   public String createIndentationString(int indentationLevel) {
     Preconditions.checkArgument(
         indentationLevel >= 0,
         "Indentation level cannot be less than zero. Given: %s",
         indentationLevel);
-    int spaces = indentationLevel * INDENTATION_SIZE;
+    int spaces = indentationLevel * indentationSize;
     StringBuilder buf = new StringBuilder(spaces);
     for (int i = 0; i < spaces; i++) {
       buf.append(' ');

@@ -18,6 +18,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
+import com.google.googlejavaformat.java.JavaFormatterOptions.Style;
 import com.google.googlejavaformat.java.SnippetFormatter.SnippetKind;
 import java.util.List;
 import org.junit.Test;
@@ -103,5 +104,37 @@ public class SnippetFormatterTest {
     assertThat(replacements)
         .containsExactly(
             Replacement.create(Range.closedOpen(0, 24), "/** a b */\nclass Test {}\n"));
+  }
+
+  @Test
+  public void classWithMethodGoogleStyle() throws FormatterException {
+    String input = "class Test {\nvoid f() {}\n}";
+    List<Replacement> replacements =
+        new SnippetFormatter(Style.GOOGLE)
+            .format(
+                SnippetKind.COMPILATION_UNIT,
+                input,
+                ImmutableList.of(Range.closedOpen(0, input.length())),
+                4,
+                true);
+    assertThat(replacements)
+        .containsExactly(
+            Replacement.create(Range.closedOpen(0, 26), "class Test {\n  void f() {}\n}\n"));
+  }
+
+  @Test
+  public void classWithMethodAospStyle() throws FormatterException {
+    String input = "class Test {\nvoid f() {}\n}";
+    List<Replacement> replacements =
+        new SnippetFormatter(Style.AOSP)
+            .format(
+                SnippetKind.COMPILATION_UNIT,
+                input,
+                ImmutableList.of(Range.closedOpen(0, input.length())),
+                4,
+                true);
+    assertThat(replacements)
+        .containsExactly(
+            Replacement.create(Range.closedOpen(0, 26), "class Test {\n    void f() {}\n}\n"));
   }
 }
